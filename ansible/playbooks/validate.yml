@@ -1,0 +1,23 @@
+---
+- name: Validate VM is reachable and usable
+  hosts: all
+  gather_facts: true
+
+  tasks:
+    - name: Validate sudo/become works
+      become: true
+      ansible.builtin.command: whoami
+      changed_when: false
+      register: whoami_result
+
+    - name: Show info
+      ansible.builtin.debug:
+        msg:
+          - "Host: {{ inventory_hostname }}"
+          - "OS: {{ ansible_facts['distribution'] }} {{
+            ansible_facts['distribution_version'] }}"
+          - "Kernel: {{ ansible_facts['kernel'] }}"
+          - "Architecture: {{ ansible_facts['architecture'] }}"
+          - "Default IPv4: {{ ansible_facts['default_ipv4']['address'] |
+            default('unknown') }}"
+          - "Become user: {{ whoami_result.stdout }}"

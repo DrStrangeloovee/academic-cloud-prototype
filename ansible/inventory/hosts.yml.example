@@ -1,0 +1,5 @@
+# The IP comes from: tofu output vm_ipv4_address
+all:
+  hosts:
+    my-vm:
+      ansible_host: 192.168.1.XXX

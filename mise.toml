@@ -2,8 +2,9 @@
 opentofu = "latest"
 pipx = "latest"
 python = "latest"
-ansible = { version = "latest", pipx_args = "--include-deps", uvx = "false" }
+#ansible = { version = "latest", pipx_args = "--include-deps", uvx = "false" }
+ansible-core = "latest"
 "pipx:ansible-lint" = "latest"
 
 [env]
-_.python.venv = { path = ".venv", create = true } # Ensure Python venv is set
+_.python.venv = { path = ".venv", create = true }

@@ -1,0 +1,8 @@
+proxmox_endpoint     = "https://192.168.1.x:8006/"
+proxmox_api_token    = "REPLACE_ME"
+proxmox_tls_insecure = true
+proxmox_node         = "proxmox"
+template_vm_id       = 9000
+vm_id                = 200
+vm_name              = "my-vm"
+ssh_public_key       = "REPLACE_ME"

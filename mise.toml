@@ -1,0 +1,5 @@
+[tools]
+opentofu = "latest"
+pipx = "latest"
+python = "latest"
+ansible = { version = "latest", pipx_args = "--include-deps", uvx = "false" }

@@ -13,6 +13,7 @@
 ```
 terraform/      OpenTofu
 ansible/        Ansible playbooks and inventory
+scripts/        Helper scritps
 ```
 
 ## Requirements

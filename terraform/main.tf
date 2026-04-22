@@ -6,4 +6,5 @@ module "spike" {
   vm_name        = var.vm_name
   template_vm_id = var.template_vm_id
   ssh_public_key = var.ssh_public_key
+  ipv4_configs   = var.ipv4_configs
 }

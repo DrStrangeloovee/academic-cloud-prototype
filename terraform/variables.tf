@@ -41,3 +41,12 @@ variable "ssh_public_key" {
   description = "SSH public key to set"
   type        = string
 }
+
+variable "ipv4_configs" {
+  description = "IPv4 config"
+  type = list(object({
+    address = string
+    gateway = optional(string)
+  }))
+  default = [{ address = "dhcp" }]
+}

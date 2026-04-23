@@ -1,10 +1,10 @@
 module "attacker" {
   source = "./modules/vm"
 
-  node_name = var.proxmox_node
+  node_name      = var.proxmox_node
   template_vm_id = var.template_vm_id
 
-  vm_id = var.attacker_vm_id
+  vm_id   = var.attacker_vm_id
   vm_name = "attacker"
 
   cores     = 2

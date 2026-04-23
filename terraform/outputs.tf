@@ -1,9 +1,9 @@
-output "vm_id" {
+output "baseline_vm_id" {
   description = "VM ID"
-  value       = module.spike.vm_id
+  value       = module.baseline.vm_id
 }
 
-output "vm_ipv4_address" {
+output "baseline_primary_ipv4" {
   description = "IPs of VM"
-  value       = module.spike.ipv4_addresses
+  value       = module.baseline.primary_ipv4
 }

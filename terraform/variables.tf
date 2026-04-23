@@ -21,20 +21,8 @@ variable "proxmox_node" {
 }
 
 variable "template_vm_id" {
-  description = "VM ID of the Cloud-Init template to clone from"
+  description = "VM ID of the Cloud-Init template to clone from (Debian 13)"
   type        = number
-}
-
-variable "vm_id" {
-  description = "VM ID (e.g. 200)"
-  type        = number
-  default     = 200
-}
-
-variable "vm_name" {
-  description = "Name of the VM"
-  type        = string
-  default     = "my-vm"
 }
 
 variable "ssh_public_key" {
@@ -42,7 +30,25 @@ variable "ssh_public_key" {
   type        = string
 }
 
-variable "ipv4_configs" {
+variable "vm_user_password" {
+  description = "Password for the Cloud-Init default user"
+  type        = string
+  sensitive   = true
+}
+
+variable "baseline_vm_id" {
+  description = "VM ID (e.g. 200)"
+  type        = number
+  default     = 200
+}
+
+variable "baseline_vm_name" {
+  description = "Hostname of the VM"
+  type        = string
+  default     = "baseline"
+}
+
+variable "baseline_ipv4_configs" {
   description = "IPv4 config"
   type = list(object({
     address = string

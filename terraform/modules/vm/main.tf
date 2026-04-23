@@ -50,6 +50,7 @@ resource "proxmox_virtual_environment_vm" "this" {
 
     user_account {
       username = var.vm_username
+      password = var.vm_user_password
       keys     = [var.ssh_public_key]
     }
   }

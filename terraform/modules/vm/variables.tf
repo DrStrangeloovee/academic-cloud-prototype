@@ -9,7 +9,7 @@ variable "vm_id" {
 }
 
 variable "vm_name" {
-  description = "Display name of the VM"
+  description = "Display name and hostname of the VM"
   type        = string
 }
 
@@ -18,15 +18,10 @@ variable "template_vm_id" {
   type        = number
 }
 
-variable "ssh_public_key" {
-  description = "SSH public key injected via Cloud-Init"
-  type        = string
-}
-
-variable "vm_username" {
-  description = "Cloud-Init default user"
-  type        = string
-  default     = "debian"
+variable "clone_full" {
+  description = "Full clone (true) or linked clone (false)"
+  type        = bool
+  default     = false
 }
 
 variable "cores" {
@@ -53,31 +48,45 @@ variable "datastore_id" {
   default     = "local-lvm"
 }
 
-variable "clone_full" {
-  description = "Full clone (true) | linked clone (false)"
-  type        = bool
-  default     = false
-}
-
 variable "network_devices" {
-  description = "List of NICs to attach -> ipv4_configs[0]."
+  description = "List of NICs to attach -> ipv4_configs[i]"
   type = list(object({
     bridge = string
     model  = optional(string, "virtio")
   }))
-  default = [{ bridge = "vmbr0" }]
+
+  validation {
+    condition     = length(var.network_devices) > 0
+    error_message = "At least one network_device is required"
+  }
 }
 
 variable "ipv4_configs" {
-  description = "Cloud-Init IPv4 config per NIC. Use address = \"dhcp\" for DHCP, or an address e.g. \"192.168.1.x/24\". List length must match network_devices."
+  description = "Cloud-Init IPv4 configuration. List length must equal network_devices. Use address = \"dhcp\" for DHCP or CIDR notation (e.g. \"10.10.10.10\\/24\")"
   type = list(object({
     address = string
     gateway = optional(string)
   }))
-  default = [{ address = "dhcp" }]
 
   validation {
     condition     = length(var.ipv4_configs) > 0
     error_message = "ipv4_configs must have at least one entry."
   }
+}
+
+variable "vm_username" {
+  description = "Cloud-Init default user"
+  type        = string
+  default     = "debian"
+}
+
+variable "vm_user_password" {
+  description = "Password for the Cloud-Init user"
+  type        = string
+  sensitive   = true
+}
+
+variable "ssh_public_key" {
+  description = "SSH key for vm_username"
+  type        = string
 }

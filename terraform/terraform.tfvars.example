@@ -7,6 +7,10 @@ template_vm_id   = 9000
 ssh_public_key   = "REPLACE_ME"
 vm_user_password = "REPLACE_ME"
 
-baseline_vm_id        = 200
-baseline_vm_name      = "baseline"
-baseline_ipv4_configs = [{ address = "dhcp" }]
+attacker_vm_id        = 210
+attacker_mgmt_ipv4    = "192.168.1.110/24"
+attacker_mgmt_gateway = "192.168.1.1"
+attacker_lab_ipv4     = "10.10.10.10/24"
+
+target_vm_id    = 220
+target_lab_ipv4 = "10.10.10.20/24"

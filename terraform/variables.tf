@@ -16,7 +16,7 @@ variable "proxmox_tls_insecure" {
 }
 
 variable "proxmox_node" {
-  description = "Proxmox node name where the VM will be created"
+  description = "Proxmox node name where VMs are created"
   type        = string
 }
 
@@ -36,23 +36,36 @@ variable "vm_user_password" {
   sensitive   = true
 }
 
-variable "baseline_vm_id" {
-  description = "VM ID (e.g. 200)"
+variable "attacker_vm_id" {
+  description = "Proxmox VM ID for the attacker VM"
   type        = number
-  default     = 200
+  default     = 210
 }
 
-variable "baseline_vm_name" {
-  description = "Hostname of the VM"
+variable "attacker_mgmt_ipv4" {
+  description = "Attacker management IP on vmbr0"
   type        = string
-  default     = "baseline"
 }
 
-variable "baseline_ipv4_configs" {
-  description = "IPv4 config"
-  type = list(object({
-    address = string
-    gateway = optional(string)
-  }))
-  default = [{ address = "dhcp" }]
+variable "attacker_mgmt_gateway" {
+  description = "Gateway of the attacker on vmbr0"
+  type        = string
+}
+
+variable "attacker_lab_ipv4" {
+  description = "Attacker IP on vmbr1"
+  type        = string
+  default     = "10.10.10.10/24"
+}
+
+variable "target_vm_id" {
+  description = "Proxmox VM ID of the target VM"
+  type        = number
+  default     = 220
+}
+
+variable "target_lab_ipv4" {
+  description = "Target IP on vmbr1"
+  type        = string
+  default     = "10.10.10.20/24"
 }

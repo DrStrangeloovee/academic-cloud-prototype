@@ -1,0 +1,6 @@
+---
+- name: Common baseline for all lab VMs
+  hosts: attackers:targets
+  become: true
+  roles:
+    - common

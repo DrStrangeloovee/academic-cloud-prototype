@@ -1,0 +1,113 @@
+---
+- name: Check Proxmox node for correct setup
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  vars:
+    proxmox_api_host: "{{ lookup('env', 'PROXMOX_HOST') }}"
+    proxmox_api_user: "{{ lookup('env', 'PROXMOX_USER') }}"
+    proxmox_token_id: "{{ lookup('env', 'PROXMOX_TOKEN_ID') }}"
+    proxmox_token_secret: "{{ lookup('env', 'PROXMOX_TOKEN_SECRET') }}"
+    proxmox_node: "{{ lookup('env', 'PROXMOX_NODE') | default('pve', true) }}"
+    template_vm_id: "{{ lookup('env', 'PROXMOX_TEMPLATE_VM_ID') | default(9000, true) | int }}"
+    lab_bridge: "{{ lookup('env', 'PROXMOX_LAB_BRIDGE') | default('vmbr1', true) }}"
+    proxmox_validate_certs: "{{ (lookup('env', 'PROXMOX_VALIDATE_CERTS') | default('false', true)) | bool }}"
+    api_base_url: "https://{{ proxmox_api_host }}:8006/api2/json"
+    api_auth_header: "PVEAPIToken={{ proxmox_api_user }}!{{ proxmox_token_id }}={{ proxmox_token_secret }}"
+
+  tasks:
+    - name: Proxmox connection env vars
+      ansible.builtin.assert:
+        that:
+          - proxmox_api_host | length > 0
+          - proxmox_api_user | length > 0
+          - proxmox_token_id | length > 0
+          - proxmox_token_secret | length > 0
+        fail_msg: >-
+          Missing one of PROXMOX_HOST / PROXMOX_USER / PROXMOX_TOKEN_ID / PROXMOX_TOKEN_SECRET
+
+    - name: Proxmox API test
+      ansible.builtin.uri:
+        url: "{{ api_base_url }}/version"
+        headers:
+          Authorization: "{{ api_auth_header }}"
+        validate_certs: "{{ proxmox_validate_certs }}"
+        return_content: false
+      register: api_probe
+      changed_when: false
+      failed_when: false
+
+    - name: Fail if Proxmox API error
+      ansible.builtin.fail:
+        msg: |
+          Proxmox API at {{ api_base_url }} is unreachable or the token is invalid
+          (HTTP {{ api_probe.status | default('?') }})
+      when: api_probe.status | default(0) != 200
+
+    - name: Check Cloud-Init template VM
+      community.proxmox.proxmox_vm_info:
+        api_host: "{{ proxmox_api_host }}"
+        api_user: "{{ proxmox_api_user }}"
+        api_token_id: "{{ proxmox_token_id }}"
+        api_token_secret: "{{ proxmox_token_secret }}"
+        validate_certs: "{{ proxmox_validate_certs }}"
+        node: "{{ proxmox_node }}"
+        vmid: "{{ template_vm_id }}"
+      register: template_info
+      changed_when: false
+
+    - name: Fail if the template VM ID  is missing
+      ansible.builtin.fail:
+        msg: Cloud-Init template (VM ID {{ template_vm_id }}) not found on node {{ proxmox_node }}
+      when: template_info.proxmox_vms | length == 0
+
+    - name: Check that vmbr1 (lab bridge) exists
+      ansible.builtin.uri:
+        url: "{{ api_base_url }}/nodes/{{ proxmox_node }}/network/{{ lab_bridge }}"
+        headers:
+          Authorization: "{{ api_auth_header }}"
+        validate_certs: "{{ proxmox_validate_certs }}"
+        return_content: false
+      register: bridge_probe
+      changed_when: false
+      failed_when: false
+
+    - name: Fail if the lab bridge is missing
+      ansible.builtin.fail:
+        msg: |
+          Lab bridge '{{ lab_bridge }}' is missing on node {{ proxmox_node }}
+          (HTTP {{ bridge_probe.status | default('?') }}).
+      when: bridge_probe.status | default(0) != 200
+
+    - name: Fetch token permissions
+      ansible.builtin.uri:
+        url: "{{ api_base_url }}/access/permissions"
+        headers:
+          Authorization: "{{ api_auth_header }}"
+        validate_certs: "{{ proxmox_validate_certs }}"
+      register: perms_probe
+      changed_when: false
+
+    - name: Initialize guest-agent audit flag
+      ansible.builtin.set_fact:
+        has_guest_agent_audit: false
+
+    - name: Set flag if VM.GuestAgent.Audit is true
+      ansible.builtin.set_fact:
+        has_guest_agent_audit: true
+      loop: "{{ perms_probe.json.data | dict2items }}"
+      loop_control:
+        label: "{{ item.key }}"
+      when: "'VM.GuestAgent.Audit' in item.value"
+
+    - name: Fail if VM.GuestAgent.Audit is missing
+      ansible.builtin.fail:
+        msg: Permission VM.GuestAgent.Audit not available add the permission to ACPRole
+      when: not has_guest_agent_audit
+
+    - name: Preflight summary
+      ansible.builtin.debug:
+        msg:
+          - "Template VMID {{ template_vm_id }} present and marked as template."
+          - "Lab bridge '{{ lab_bridge }}' present on node {{ proxmox_node }}."
+          - "Token grants VM.GuestAgent.Audit."

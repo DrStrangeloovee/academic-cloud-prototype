@@ -1,0 +1,6 @@
+---
+common_timezone: Europe/Berlin
+common_base_packages:
+  - curl
+  - vim
+  - ca-certificates

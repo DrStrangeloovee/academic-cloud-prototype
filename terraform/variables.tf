@@ -69,3 +69,15 @@ variable "target_lab_ipv4" {
   type        = string
   default     = "10.10.10.20/24"
 }
+
+variable "target_lab_gateway" {
+  description = "Default gateway for target (attacker lab IP for NAT to vmbr0)"
+  type        = string
+  default     = "10.10.10.10"
+}
+
+variable "target_dns_servers" {
+  description = "DNS servers to use for target"
+  type        = list(string)
+  default     = ["1.1.1.1", "9.9.9.9"]
+}

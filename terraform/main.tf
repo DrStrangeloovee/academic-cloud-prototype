@@ -41,8 +41,10 @@ module "target" {
   ]
 
   ipv4_configs = [
-    { address = var.target_lab_ipv4 },
+    { address = var.target_lab_ipv4, gateway = var.target_lab_gateway },
   ]
+
+  dns_servers = var.target_dns_servers
 
   ssh_public_key   = var.ssh_public_key
   vm_user_password = var.vm_user_password

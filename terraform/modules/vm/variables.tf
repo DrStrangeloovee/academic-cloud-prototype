@@ -90,3 +90,9 @@ variable "ssh_public_key" {
   description = "SSH key for vm_username"
   type        = string
 }
+
+variable "dns_servers" {
+  description = "Cloud-Init DNS resolvers"
+  type        = list(string)
+  default     = []
+}

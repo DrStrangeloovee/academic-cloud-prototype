@@ -38,6 +38,13 @@ resource "proxmox_virtual_environment_vm" "this" {
   initialization {
     datastore_id = var.datastore_id
 
+    dynamic "dns" {
+      for_each = length(var.dns_servers) > 0 ? [1] : []
+      content {
+        servers = var.dns_servers
+      }
+    }
+
     dynamic "ip_config" {
       for_each = var.ipv4_configs
       content {

@@ -1,6 +1,14 @@
 ---
-- name: Common baseline for all lab VMs
-  hosts: attackers:targets
+- name: Configure attackers (baseline + lab NAT)
+  hosts: attackers
   become: true
   roles:
     - common
+    - attacker_lab_router
+
+- name: Configure targets (baseline + juice shop)
+  hosts: targets
+  become: true
+  roles:
+    - common
+    - target_juice_shop

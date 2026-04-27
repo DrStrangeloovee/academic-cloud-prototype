@@ -1,0 +1,5 @@
+---
+- name: Persist iptables rules
+  ansible.builtin.shell:
+    cmd: iptables-save > /etc/iptables/rules.v4
+  changed_when: true

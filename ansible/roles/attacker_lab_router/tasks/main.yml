@@ -1,0 +1,34 @@
+---
+- name: Enable IPv4 forwarding
+  ansible.posix.sysctl:
+    name: net.ipv4.ip_forward
+    value: '1'
+    state: present
+    sysctl_file: /etc/sysctl.d/10-lab-router.conf
+    reload: true
+
+- name: Preseed iptables-persistent (no autosave on install)
+  ansible.builtin.debconf:
+    name: iptables-persistent
+    question: "iptables-persistent/{{ item }}"
+    value: 'false'
+    vtype: boolean
+  loop:
+    - autosave_v4
+    - autosave_v6
+
+- name: Install iptables and iptables-persistent
+  ansible.builtin.apt:
+    name:
+      - iptables
+      - iptables-persistent
+    state: present
+
+- name: NAT lab subnet via the management interface
+  ansible.builtin.iptables:
+    table: nat
+    chain: POSTROUTING
+    source: "{{ attacker_lab_router_subnet }}"
+    out_interface: "{{ ansible_default_ipv4.interface }}"
+    jump: MASQUERADE
+  notify: Persist iptables rules

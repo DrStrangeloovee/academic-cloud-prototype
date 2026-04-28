@@ -1,0 +1,13 @@
+---
+attacker_kali_tools_keyring_path: /etc/apt/keyrings/kali.asc
+attacker_kali_tools_key_url: https://archive.kali.org/archive-key.asc
+attacker_kali_tools_pin_priority: 50
+attacker_kali_tools_packages:
+  - nmap
+  - hydra
+  - sqlmap
+  - gobuster
+  - nikto
+  - wfuzz
+  - curl
+  - jq

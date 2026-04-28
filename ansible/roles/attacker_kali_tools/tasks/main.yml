@@ -1,0 +1,42 @@
+---
+- name: Ensure /etc/apt/keyrings exists
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+
+- name: Install Kali apt key
+  ansible.builtin.get_url:
+    url: "{{ attacker_kali_tools_key_url }}"
+    dest: "{{ attacker_kali_tools_keyring_path }}"
+    mode: '0644'
+    force: false
+
+- name: Add Kali apt repository
+  ansible.builtin.deb822_repository:
+    name: kali
+    types: deb
+    uris: http://http.kali.org/kali
+    suites: kali-rolling
+    components:
+      - main
+      - contrib
+      - non-free
+      - non-free-firmware
+    signed_by: "{{ attacker_kali_tools_keyring_path }}"
+  notify: Refresh apt cache
+
+- name: Pin Kali packages below Debian
+  ansible.builtin.template:
+    src: kali-pin.j2
+    dest: /etc/apt/preferences.d/kali
+    mode: '0644'
+  notify: Refresh apt cache
+
+- name: Flush handlers so Kali repo is in cache before install
+  ansible.builtin.meta: flush_handlers
+
+- name: Install pentest tool list
+  ansible.builtin.apt:
+    name: "{{ attacker_kali_tools_packages }}"
+    state: present

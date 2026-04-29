@@ -9,4 +9,4 @@ targets:
     target:
       ansible_host: ${target_lab_ip}
       proxmox_vmid: ${target_vm_id}
-      ansible_ssh_common_args: '-o ProxyJump=debian@${attacker_mgmt_ip}'
+      ansible_ssh_common_args: '-o ProxyCommand="ssh -W %h:%p -o BatchMode=yes -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null debian@${attacker_mgmt_ip}"'

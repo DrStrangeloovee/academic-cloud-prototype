@@ -40,3 +40,4 @@
   ansible.builtin.apt:
     name: "{{ attacker_kali_tools_packages }}"
     state: present
+    lock_timeout: 300

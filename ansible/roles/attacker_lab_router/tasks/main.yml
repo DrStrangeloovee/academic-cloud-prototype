@@ -23,6 +23,7 @@
       - iptables
       - iptables-persistent
     state: present
+    lock_timeout: 300
 
 - name: NAT lab subnet via the mgmt interface
   ansible.builtin.iptables:

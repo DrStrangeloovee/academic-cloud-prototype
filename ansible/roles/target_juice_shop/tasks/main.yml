@@ -33,6 +33,7 @@
       - containerd.io
       - docker-compose-plugin
     state: present
+    lock_timeout: 300
 
 - name: Enable docker service
   ansible.builtin.systemd_service:

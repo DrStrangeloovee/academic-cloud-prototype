@@ -1,0 +1,13 @@
+---
+- name: Refresh apt cache
+  ansible.builtin.apt:
+    update_cache: true
+
+- name: Reload systemd
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+
+- name: Restart juice-shop
+  ansible.builtin.systemd_service:
+    name: juice-shop
+    state: restarted

@@ -1,0 +1,5 @@
+---
+target_juice_shop_image: bkimminich/juice-shop
+target_juice_shop_version: v17.2.0
+target_juice_shop_port: 3000
+target_juice_shop_dir: /opt/juice-shop

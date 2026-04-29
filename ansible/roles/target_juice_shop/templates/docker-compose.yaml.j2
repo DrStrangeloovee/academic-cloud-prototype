@@ -1,0 +1,6 @@
+services:
+  juice-shop:
+    image: {{ target_juice_shop_image }}:{{ target_juice_shop_version }}
+    ports:
+      - "{{ target_juice_shop_port }}:3000"
+    restart: unless-stopped

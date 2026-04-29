@@ -1,0 +1,85 @@
+---
+- name: Ensure /etc/apt/keyrings exists
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+
+- name: Install Docker apt key
+  ansible.builtin.get_url:
+    url: https://download.docker.com/linux/debian/gpg
+    dest: /etc/apt/keyrings/docker.asc
+    mode: '0644'
+    force: false
+
+- name: Add Docker apt repository
+  ansible.builtin.deb822_repository:
+    name: docker
+    types: deb
+    uris: https://download.docker.com/linux/debian
+    suites: "{{ ansible_distribution_release }}"
+    components: stable
+    signed_by: /etc/apt/keyrings/docker.asc
+  notify: Refresh apt cache
+
+- name: Flush handlers so Docker repo is in apt cache before install
+  ansible.builtin.meta: flush_handlers
+
+- name: Install Docker engine and compose plugin
+  ansible.builtin.apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-compose-plugin
+    state: present
+
+- name: Enable docker service
+  ansible.builtin.systemd_service:
+    name: docker
+    enabled: true
+    state: started
+
+- name: Create Juice Shop directory
+  ansible.builtin.file:
+    path: "{{ target_juice_shop_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Render docker-compose.yaml
+  ansible.builtin.template:
+    src: docker-compose.yaml.j2
+    dest: "{{ target_juice_shop_dir }}/docker-compose.yaml"
+    mode: '0644'
+  notify: Restart juice-shop
+
+- name: Install juice-shop systemd unit
+  ansible.builtin.template:
+    src: juice-shop.service.j2
+    dest: /etc/systemd/system/juice-shop.service
+    mode: '0644'
+  notify:
+    - Reload systemd
+    - Restart juice-shop
+
+- name: Enable and start juice-shop service
+  ansible.builtin.systemd_service:
+    name: juice-shop
+    enabled: true
+    state: started
+    daemon_reload: true
+
+- name: Wait for Juice Shop port
+  ansible.builtin.wait_for:
+    host: 127.0.0.1
+    port: "{{ target_juice_shop_port }}"
+    timeout: 120
+
+- name: Smoke-test Juice Shop HTTP endpoint
+  ansible.builtin.uri:
+    url: "http://127.0.0.1:{{ target_juice_shop_port }}/"
+    status_code: 200
+  register: target_juice_shop_smoke
+  retries: 30
+  delay: 5
+  until: target_juice_shop_smoke.status == 200

@@ -1,16 +1,19 @@
 # OpenTofu / Terraform state & secrets
 terraform/.terraform/
 terraform/.terraform.lock.hcl
-terraform/terraform.tfstate
-terraform/terraform.tfstate.backup
+terraform/terraform.tfstate*
 terraform/terraform.tfstate.d/
 terraform/*.tfvars
 !terraform/*.tfvars.example
+/terraform.tfstate
 
 # Ansible secrets & generated inventory
 ansible/inventory/hosts.yml
 ansible/*.retry
 ansible/group_vars/all/vault.yml
+
+# Benchmark log files
+benchmarks/*.log
 
 # General secrets
 *.pem

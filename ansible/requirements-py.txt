@@ -1,0 +1,3 @@
+# Python depsendencies required by community.proxmox modules
+proxmoxer>=2.0,<3
+requests>=2.28

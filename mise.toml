@@ -1,10 +1,9 @@
 [tools]
-opentofu = "latest"
-pipx = "latest"
-python = "latest"
-#ansible = { version = "latest", pipx_args = "--include-deps", uvx = "false" }
-ansible-core = "latest"
-"pipx:ansible-lint" = "latest"
+opentofu = "1.11.6"
+pipx = "1.11.1"
+python = "3.14.4"
+ansible-core = "2.20.5"
+"pipx:ansible-lint" = "26.4.0"
 
 [env]
 _.python.venv = { path = ".venv", create = true }

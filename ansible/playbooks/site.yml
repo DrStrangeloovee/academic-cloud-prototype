@@ -1,10 +1,11 @@
 ---
-- name: Configure attackers (baseline + lab NAT)
+- name: Configure attackers (baseline + lab NAT + pentest tools)
   hosts: attackers
   become: true
   roles:
     - common
     - attacker_lab_router
+    - attacker_kali_tools
 
 - name: Configure targets (baseline + juice shop)
   hosts: targets

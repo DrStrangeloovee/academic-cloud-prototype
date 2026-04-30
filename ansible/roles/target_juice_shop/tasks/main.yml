@@ -70,6 +70,9 @@
     state: started
     daemon_reload: true
 
+- name: Flush handlers so the container restart finishes before smoke
+  ansible.builtin.meta: flush_handlers
+
 - name: Wait for Juice Shop port
   ansible.builtin.wait_for:
     host: 127.0.0.1

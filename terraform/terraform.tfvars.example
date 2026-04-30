@@ -12,5 +12,7 @@ attacker_mgmt_ipv4    = "192.168.1.110/24"
 attacker_mgmt_gateway = "192.168.1.1"
 attacker_lab_ipv4     = "10.10.10.10/24"
 
-target_vm_id    = 220
-target_lab_ipv4 = "10.10.10.20/24"
+target_vm_id       = 220
+target_lab_ipv4    = "10.10.10.20/24"
+target_lab_gateway = "10.10.10.10"
+target_dns_servers = ["1.1.1.1", "9.9.9.9"]

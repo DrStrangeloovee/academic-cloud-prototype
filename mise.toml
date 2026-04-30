@@ -7,3 +7,8 @@ ansible-core = "2.20.5"
 
 [env]
 _.python.venv = { path = ".venv", create = true }
+
+[tasks.ansible-collections]
+description = "Install Ansible collections from ansible/requirements.yml"
+run = "ansible-galaxy collection install -r ansible/requirements.yml"
+sources = ["ansible/requirements.yml"]

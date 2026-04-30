@@ -1,7 +1,9 @@
 ---
 - name: Wait for cloud-init to finish (avoids apt-daily lock races)
   ansible.builtin.command: cloud-init status --wait
+  register: common_cloud_init
   changed_when: false
+  failed_when: "'done' not in common_cloud_init.stdout"
 
 - name: Set timezone
   community.general.timezone:

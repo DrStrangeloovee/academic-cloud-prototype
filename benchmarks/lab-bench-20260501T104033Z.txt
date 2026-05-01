@@ -1,0 +1,17 @@
+# lab-bench 20260501T104033Z
+
+# iterations=5
+iter apply   ssh_wait  ansible  destroy  total  
+1    21      1         295      8        325    
+2    20      2         320      7        349    
+3    21      1         285      7        314    
+4    20      1         266      7        294    
+5    21      1         294      7        323    
+
+# aggregates
+phase     min    mean   max   
+apply     20     20.6   21    
+ssh_wait  1      1.2    2     
+ansible   266    292.0  320   
+destroy   7      7.2    8     
+total     294    321.0  349   

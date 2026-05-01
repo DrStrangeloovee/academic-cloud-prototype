@@ -1,0 +1,6 @@
+# drift-test 20260501T085019Z
+# cycles=3
+cycle  up_s    smoke      up_status smoke_s   down_s    notes
+1      340     OK         OK        1         8         total=349s
+2      339     OK         OK        1         7         total=347s
+3      290     OK         OK        1         6         total=297s

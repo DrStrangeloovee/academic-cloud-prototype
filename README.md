@@ -12,6 +12,7 @@ on a Proxmox VE host with OpenTofu and Ansible.
 ```
 terraform/   OpenTofu module + lab definition (attacker, target)
 ansible/     Playbooks (preflight, site) and roles
+benchmarks/  Benchmark and drift results
 ```
 
 ## Requirements
